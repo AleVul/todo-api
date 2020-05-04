@@ -1,11 +1,16 @@
 use super::models::{Category, CreateCategoryDto};
+use crate::state::AppState;
 use actix_web::{delete, get, patch, post, web, HttpResponse, Result};
 
 #[post("/categories")]
-async fn create(_dto: web::Json<CreateCategoryDto>) -> Result<HttpResponse> {
+async fn create(
+    _dto: web::Json<CreateCategoryDto>,
+    _data: web::Data<AppState>,
+) -> Result<HttpResponse> {
     let obj = Category {
         id: 1,
         name: String::from("Foo"),
+        color: String::from("Bar"),
     };
 
     Ok(HttpResponse::Ok().json(obj))
@@ -16,6 +21,7 @@ async fn read() -> Result<HttpResponse> {
     let obj = Category {
         id: 1,
         name: String::from("Foo"),
+        color: String::from("Bar"),
     };
 
     Ok(HttpResponse::Ok().json(obj))
@@ -26,6 +32,7 @@ async fn update(id: web::Path<u64>, _dto: web::Json<CreateCategoryDto>) -> Resul
     let obj = Category {
         id: *id,
         name: String::from("Foo"),
+        color: String::from("Bar"),
     };
 
     Ok(HttpResponse::Ok().json(obj))
