@@ -5,10 +5,12 @@ use actix_web::{delete, get, patch, post, web, HttpResponse, Result};
 #[post("/categories")]
 async fn create(
     _dto: web::Json<CreateCategoryDto>,
-    _data: web::Data<AppState>,
+    data: web::Data<AppState>,
 ) -> Result<HttpResponse> {
+    let len = data.categories.lock().unwrap().len();
+
     let obj = Category {
-        id: 1,
+        id: (len + 1) as u64,
         name: String::from("Foo"),
         color: String::from("Bar"),
     };
@@ -17,7 +19,8 @@ async fn create(
 }
 
 #[get("/categories")]
-async fn read() -> Result<HttpResponse> {
+async fn read(data: web::Data<AppState>) -> Result<HttpResponse> {
+    let _cats = data.categories.lock().unwrap();
     let obj = Category {
         id: 1,
         name: String::from("Foo"),
