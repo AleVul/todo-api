@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Queryable)]
 pub struct Category {
-    pub id: u64,
+    pub id: String,
     pub name: String,
     pub color: String,
 }

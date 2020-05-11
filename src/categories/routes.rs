@@ -7,10 +7,10 @@ async fn create(
     _dto: web::Json<CreateCategoryDto>,
     data: web::Data<AppState>,
 ) -> Result<HttpResponse> {
-    let len = data.categories.lock().unwrap().len();
+    let _len = data.categories.lock().unwrap().len();
 
     let obj = Category {
-        id: (len + 1) as u64,
+        id: String::from("create"),
         name: String::from("Foo"),
         color: String::from("Bar"),
     };
@@ -22,7 +22,7 @@ async fn create(
 async fn read(data: web::Data<AppState>) -> Result<HttpResponse> {
     let _cats = data.categories.lock().unwrap();
     let obj = Category {
-        id: 1,
+        id: String::from("read"),
         name: String::from("Foo"),
         color: String::from("Bar"),
     };
@@ -31,9 +31,9 @@ async fn read(data: web::Data<AppState>) -> Result<HttpResponse> {
 }
 
 #[patch("/categories/{id}")]
-async fn update(id: web::Path<u64>, _dto: web::Json<CreateCategoryDto>) -> Result<HttpResponse> {
+async fn update(id: web::Path<String>, _dto: web::Json<CreateCategoryDto>) -> Result<HttpResponse> {
     let obj = Category {
-        id: *id,
+        id: id.into_inner(),
         name: String::from("Foo"),
         color: String::from("Bar"),
     };
