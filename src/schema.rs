@@ -1,6 +1,6 @@
 table! {
     categories (id) {
-        id -> Uuid,
+        id -> Bpchar,
         name -> Varchar,
         color -> Bpchar,
     }

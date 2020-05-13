@@ -1,28 +1,28 @@
 use super::models::{Category, CreateCategoryDto};
 use crate::state::AppState;
 use actix_web::{delete, get, patch, post, web, HttpResponse, Result};
+use uuid::Uuid;
 
 #[post("/categories")]
 async fn create(
-    _dto: web::Json<CreateCategoryDto>,
-    data: web::Data<AppState>,
+    dto: web::Json<CreateCategoryDto>,
+    state: web::Data<AppState>,
 ) -> Result<HttpResponse> {
-    let _len = data.categories.lock().unwrap().len();
+    let res = state.db.send(Category::from(dto.into_inner())).await;
 
-    let obj = Category {
-        id: String::from("create"),
-        name: String::from("Foo"),
-        color: String::from("Bar"),
-    };
-
-    Ok(HttpResponse::Ok().json(obj))
+    match res {
+        Ok(res2) => match res2 {
+            Ok(cat) => Ok(HttpResponse::Ok().json(cat)),
+            _ => Ok(HttpResponse::Ok().body("data")),
+        },
+        _ => Ok(HttpResponse::Ok().body("data")),
+    }
 }
 
 #[get("/categories")]
-async fn read(data: web::Data<AppState>) -> Result<HttpResponse> {
-    let _cats = data.categories.lock().unwrap();
+async fn read(_data: web::Data<AppState>) -> Result<HttpResponse> {
     let obj = Category {
-        id: String::from("read"),
+        id: Uuid::new_v4().to_string(),
         name: String::from("Foo"),
         color: String::from("Bar"),
     };
@@ -31,9 +31,9 @@ async fn read(data: web::Data<AppState>) -> Result<HttpResponse> {
 }
 
 #[patch("/categories/{id}")]
-async fn update(id: web::Path<String>, _dto: web::Json<CreateCategoryDto>) -> Result<HttpResponse> {
+async fn update(_id: web::Path<String>, _dto: web::Json<CreateCategoryDto>) -> Result<HttpResponse> {
     let obj = Category {
-        id: id.into_inner(),
+        id: Uuid::new_v4().to_string(),
         name: String::from("Foo"),
         color: String::from("Bar"),
     };
