@@ -1,5 +1,3 @@
-use actix::Message;
-use diesel::result::Error;
 use serde::{Deserialize, Serialize};
 // required for `table_name` macro.
 use crate::schema::categories;
@@ -23,10 +21,6 @@ impl From<CreateCategoryDto> for Category {
     }
 }
 
-impl Message for Category {
-    type Result = Result<Category, Error>;
-}
-
 /**
  * DTO to create a `Category` entity
  * in the database.
@@ -37,4 +31,16 @@ impl Message for Category {
 pub struct CreateCategoryDto {
     pub name: String,
     pub color: String,
+}
+
+/**
+ * Struct for quering API of Category
+ * module.
+ */
+#[derive(Deserialize)]
+pub struct QueryCategories {
+    pub name: Option<String>,
+    pub color: Option<String>,
+    pub page: u32,
+    pub per_page: u32,
 }

@@ -1,4 +1,4 @@
-use super::models::{Category, CreateCategoryDto};
+use super::models::{Category, CreateCategoryDto, QueryCategories};
 use crate::state::AppState;
 use actix_web::{delete, get, patch, post, web, HttpResponse, Result};
 use uuid::Uuid;
@@ -10,6 +10,7 @@ async fn create(
 ) -> Result<HttpResponse> {
     let res = state.db.send(Category::from(dto.into_inner())).await;
 
+    // TODO: rethink this how to make it more idiomic in rust.
     match res {
         Ok(res2) => match res2 {
             Ok(cat) => Ok(HttpResponse::Ok().json(cat)),
@@ -20,18 +21,26 @@ async fn create(
 }
 
 #[get("/categories")]
-async fn read(_data: web::Data<AppState>) -> Result<HttpResponse> {
-    let obj = Category {
-        id: Uuid::new_v4().to_string(),
-        name: String::from("Foo"),
-        color: String::from("Bar"),
-    };
+async fn read(
+    state: web::Data<AppState>,
+    query: web::Query<QueryCategories>,
+) -> Result<HttpResponse> {
+    let res = state.db.send(query.into_inner()).await;
 
-    Ok(HttpResponse::Ok().json(obj))
+    match res {
+        Ok(res2) => match res2 {
+            Ok(cats) => Ok(HttpResponse::Ok().json(cats)),
+            _ => Ok(HttpResponse::Ok().body("data")),
+        },
+        _ => Ok(HttpResponse::Ok().body("data")),
+    }
 }
 
 #[patch("/categories/{id}")]
-async fn update(_id: web::Path<String>, _dto: web::Json<CreateCategoryDto>) -> Result<HttpResponse> {
+async fn update(
+    _id: web::Path<String>,
+    _dto: web::Json<CreateCategoryDto>,
+) -> Result<HttpResponse> {
     let obj = Category {
         id: Uuid::new_v4().to_string(),
         name: String::from("Foo"),
