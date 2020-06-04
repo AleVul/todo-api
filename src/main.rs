@@ -2,6 +2,7 @@
 extern crate diesel;
 extern crate actix;
 extern crate dotenv;
+extern crate num_cpus;
 
 mod categories;
 mod executor;
@@ -23,7 +24,7 @@ async fn main() -> std::io::Result<()> {
         .build(manager)
         .expect("Failed to create pool.");
 
-    let addr = SyncArbiter::start(4, move || DbExecutor(pool.clone()));
+    let addr = SyncArbiter::start(num_cpus::get(), move || DbExecutor(pool.clone()));
     let state = web::Data::new(AppState { db: addr.clone() });
 
     HttpServer::new(move || {
