@@ -1,11 +1,11 @@
 //! This holds the data base executor
 //! actor.
 
-use crate::schema::categories::dsl::*;
 use crate::categories::{Category, QueryCategories};
+use crate::schema::categories::dsl::*;
 use actix::{Actor, Handler, Message, SyncContext};
-use diesel::prelude::*;
 use diesel::pg::PgConnection;
+use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
 use diesel::result::Error;
 use std::convert::TryInto;
