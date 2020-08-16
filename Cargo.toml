@@ -9,8 +9,8 @@ edition = "2018"
 [dependencies]
 actix-web = "2.0.0"
 actix-rt = "1"
-serde = "1.0.106"
-diesel = { version = "1.4.4", features = ["postgres", "r2d2"] }
+serde = "1.0.115"
+diesel = { version = "1.4.5", features = ["postgres", "sqlite", "r2d2"] }
 dotenv = "0.15.0"
 r2d2 = "0.8.8"
 actix = "0.9.0"
