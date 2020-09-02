@@ -15,7 +15,7 @@ mod state;
 use actix::SyncArbiter;
 use actix_web::dev::Server;
 use actix_web::{web, App, HttpResponse, HttpServer};
-use diesel::pg::PgConnection;
+use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
 use executor::DbExecutor;
 use state::AppState;
@@ -24,6 +24,7 @@ use std::net::TcpListener;
 pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
     let db_url = "postgres://postgres:test@localhost:5432/todo";
     let manager = ConnectionManager::<PgConnection>::new(db_url);
+    let manager2 = ConnectionManager::<SqliteConnection>::new(db_url);
     let pool = r2d2::Pool::builder()
         .build(manager)
         .expect("Failed to create pool.");
@@ -43,4 +44,18 @@ pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
     .run();
 
     Ok(server)
+}
+
+pub struct Config<T> {
+    listener: TcpListener,
+    manager: ConnectionManager<T>,
+}
+
+impl<T> Config<T> {
+    pub fn new(listener: TcpListener, db_url: &str) -> Self {
+        Config {
+            listener,
+            manager: ConnectionManager::<T>::new(db_url),
+        }
+    }
 }

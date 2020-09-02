@@ -1,5 +1,0 @@
--- Your SQL goes here
-
-ALTER TABLE categories ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE categories ALTER COLUMN id TYPE char(36);
-DROP EXTENSION IF EXISTS "uuid-ossp";
